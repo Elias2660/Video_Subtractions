@@ -39,9 +39,12 @@ python Convert.py --path <path-to-videos> --dest-dir <destination-directory> --m
 
 ## Arguments
 
-`--path`: The path to the directory containing the videos. Default is the current directory.
-`--dest-dir`: The directory to move the old videos to. Default is unsubtracted_videos.
-`--max-workers`: The number of workers to use for processing the videos. Default is 10.
+`--path`: The path to the directory containing the videos. Default is the current directory. 
+
+`--dest-dir`: The directory to move the old videos to. Default is unsubtracted_videos. 
+
+`--max-workers`: The number of workers to use for processing the videos. Default is 10. 
+
 `--subtractor`: The background subtractor to use. Choices are MOG2 and KNN. Default is MOG2.
 
 ## Example
