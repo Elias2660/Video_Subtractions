@@ -8,7 +8,7 @@ import re
 import logging
 
 
-def convert_video(subtractor, file, old_video_repository): 
+def convert_video(subtractor, file, old_video_repository):
     try:
         cap = cv2.VideoCapture(os.path.join(old_video_repository, file))
 
@@ -21,7 +21,7 @@ def convert_video(subtractor, file, old_video_repository):
             (width, height),
         )
         logging.info(f"Starting the conversion of the video {file}")
-        
+
         count = 0
         while True:
             ret, frame = cap.read()
@@ -32,7 +32,6 @@ def convert_video(subtractor, file, old_video_repository):
             fgMask = subtractor.apply(frame)
             masked = cv2.bitwise_and(frame, frame, mask=fgMask)
 
-
             writer.write(masked)
     except Exception as e:
         logging.error(f"Error processing the video {file} with error {e}")
@@ -41,12 +40,13 @@ def convert_video(subtractor, file, old_video_repository):
         writer.release()
         logging.info(f"Reseased captures for video {file}")
 
+
 if __name__ == "__main__":
     freeze_support()
-    
+
     format = "%(asctime)s: %(message)s"
     logging.basicConfig(format=format, level=logging.DEBUG, datefmt="%H:%M:%S")
-    
+
     parser = argparse.ArgumentParser(description="Add background subtraction to videos")
     parser.add_argument("--path", help="the path to the video", default=".")
     parser.add_argument(
@@ -75,22 +75,25 @@ if __name__ == "__main__":
     os.mkdir(args.dest_dir)
 
     command = f"mv *.mp4 {args.dest_dir}"
-    
+
     old_dir_list = os.listdir(args.dest_dir)
     file_list = list(set([file for file in file_list if re.search(r".mp4$", file)]))
 
-    logging.info("Finished the moving of old videos to the destination directory, creating subtractor")
+    logging.info(
+        "Finished the moving of old videos to the destination directory, creating subtractor"
+    )
     if args.subtractor == "MOG2":
         subtractor = cv2.createBackgroundSubtractorMOG2()
     elif args.subtractor == "KNN":
         subtractor = cv2.createBackgroundSubtractorKNN()
-        
+
     logging.info("Starting the conversion of the videos")
     with concurrent.futures.ProcessPoolExecutor(
         max_workers=args.max_workers
     ) as executor:
-        for file in file_list:
-            if file.endswith(".mp4"):
-                futures = [
-                    executor.submit(convert_video, subtractor, file, args.dest_dir) for file in file_list
-                ]
+        futures = [
+            executor.submit(convert_video, subtractor, file, args.dest_dir)
+            for file in file_list
+        ]
+        concurrent.futures.wait(futures)
+    logging.info("Finished the conversion of the videos")
