@@ -3,7 +3,7 @@ import argparse
 from multiprocessing import freeze_support
 import os
 import subprocess
-import concurrent
+import concurrent.futures
 import re
 import logging
 
