@@ -11,21 +11,23 @@ This project provides a script to perform background subtraction on videos using
 ## Installation
 
 1. Clone the repository:
-    ```sh
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
+
+   ```sh
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
 
 2. Create and activate a virtual environment:
-    ```sh
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
+
+   ```sh
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
 
 3. Install the required packages:
-    ```sh
-    pip install -r requirements.txt
-    ```
+   ```sh
+   pip install -r requirements.txt
+   ```
 
 ## Usage
 
@@ -36,20 +38,22 @@ python Convert.py --path <path-to-videos> --dest-dir <destination-directory> --m
 ```
 
 ## Arguments
+
 `--path`: The path to the directory containing the videos. Default is the current directory.
 `--dest-dir`: The directory to move the old videos to. Default is unsubtracted_videos.
 `--max-workers`: The number of workers to use for processing the videos. Default is 10.
 `--subtractor`: The background subtractor to use. Choices are MOG2 and KNN. Default is MOG2.
 
 ## Example
+
 ```sh
 python Convert.py --path ./videos --dest-dir ./processed_videos --max-workers 5 --subtractor KNN
 ```
 
 ## Logging
+
 The script logs its progress and any errors encountered during processing. Logs are printed to the console with timestamps.
 
 ## License
-This project is licensed under the [MIT License](LICENSE).
 
-```
+This project is licensed under the [MIT License](LICENSE).
