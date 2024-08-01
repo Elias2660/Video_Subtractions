@@ -21,7 +21,7 @@ def convert_video(subtract_type, file, old_video_repository):
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         writer = cv2.VideoWriter(
             file,
-            cv2.VideoWriter_fourcc(*"DIVX"),
+            cv2.VideoWriter_fourcc(*"mp4v"),
             int(cap.get(cv2.CAP_PROP_FPS)),
             (width, height),
         )
