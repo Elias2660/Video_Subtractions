@@ -75,7 +75,7 @@ if __name__ == "__main__":
     os.mkdir(args.dest_dir)
 
     command = f"mv *.mp4 {args.dest_dir}"
-
+    subprocess.run(command, shell=True)
     old_dir_list = os.listdir(args.dest_dir)
     file_list = list(set([file for file in file_list if re.search(r".mp4$", file)]))
 
