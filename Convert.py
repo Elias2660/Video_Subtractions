@@ -8,10 +8,15 @@ import re
 import logging
 
 
-def convert_video(subtractor, file, old_video_repository):
+def convert_video(subtract_type, file, old_video_repository):
+    logging.info(f"Starting the conversion of the video {file}")
     try:
         cap = cv2.VideoCapture(os.path.join(old_video_repository, file))
-
+        
+        if subtract_type == "MOG2":
+            subtractor = cv2.createBackgroundSubtractorMOG2()
+        elif subtract_type == "KNN":
+            subtractor = cv2.createBackgroundSubtractorKNN()
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         writer = cv2.VideoWriter(
@@ -20,7 +25,7 @@ def convert_video(subtractor, file, old_video_repository):
             int(cap.get(cv2.CAP_PROP_FPS)),
             (width, height),
         )
-        logging.info(f"Starting the conversion of the video {file}")
+        logging.info(f"Starting the reading of the video {file}, with height {height} and width {width}")
 
         count = 0
         while True:
@@ -31,7 +36,7 @@ def convert_video(subtractor, file, old_video_repository):
                 logging.info(f"Processing frame {count} of {file}")
             fgMask = subtractor.apply(frame)
             masked = cv2.bitwise_and(frame, frame, mask=fgMask)
-
+            count += 1
             writer.write(masked)
     except Exception as e:
         logging.error(f"Error processing the video {file} with error {e}")
@@ -80,19 +85,15 @@ if __name__ == "__main__":
     file_list = list(set([file for file in file_list if re.search(r".mp4$", file)]))
 
     logging.info(
-        "Finished the moving of old videos to the destination directory, creating subtractor"
+        f"Finished the moving of old videos to the destination directory, creating subtractor, file list is {file_list}"
     )
-    if args.subtractor == "MOG2":
-        subtractor = cv2.createBackgroundSubtractorMOG2()
-    elif args.subtractor == "KNN":
-        subtractor = cv2.createBackgroundSubtractorKNN()
 
     logging.info("Starting the conversion of the videos")
     with concurrent.futures.ProcessPoolExecutor(
         max_workers=args.max_workers
     ) as executor:
         futures = [
-            executor.submit(convert_video, subtractor, file, args.dest_dir)
+            executor.submit(convert_video, args.subtractor, file, args.dest_dir)
             for file in file_list
         ]
         concurrent.futures.wait(futures)
