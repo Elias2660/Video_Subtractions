@@ -12,7 +12,7 @@ def convert_video(subtract_type, file, old_video_repository):
     logging.info(f"Starting the conversion of the video {file}")
     try:
         cap = cv2.VideoCapture(os.path.join(old_video_repository, file))
-        
+
         if subtract_type == "MOG2":
             subtractor = cv2.createBackgroundSubtractorMOG2()
         elif subtract_type == "KNN":
@@ -25,7 +25,9 @@ def convert_video(subtract_type, file, old_video_repository):
             int(cap.get(cv2.CAP_PROP_FPS)),
             (width, height),
         )
-        logging.info(f"Starting the reading of the video {file}, with height {height} and width {width}")
+        logging.info(
+            f"Starting the reading of the video {file}, with height {height} and width {width}"
+        )
 
         count = 0
         while True:
@@ -53,9 +55,13 @@ if __name__ == "__main__":
     logging.basicConfig(format=format, level=logging.DEBUG, datefmt="%H:%M:%S")
 
     parser = argparse.ArgumentParser(description="Add background subtraction to videos")
-    parser.add_argument("--path", help="the path to the video", default=".")
+    parser.add_argument(
+        "--path", help="the path to the video", required=False, type=str, default="."
+    )
     parser.add_argument(
         "--dest-dir",
+        type=str,
+        required=False,
         help="the directory to move the old videos too",
         default="unsubtracted_videos",
     )
@@ -63,11 +69,15 @@ if __name__ == "__main__":
         "--max-workers",
         help="the number of workers to use in processing then videos",
         default=10,
+        required=False,
+        type=int,
     )
     parser.add_argument(
         "--subtractor",
         help="the background subtractor to use",
         default="MOG2",
+        type=str,
+        required=False,
         choices=["MOG2", "KNN"],
     )
     args = parser.parse_args()
