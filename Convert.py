@@ -34,7 +34,7 @@ def convert_video(subtract_type, file, old_video_repository):
             ret, frame = cap.read()
             if not ret:
                 break
-            if count % 10000 == 0:
+            if count % 10000 == 0 and count != 0:
                 logging.info(f"Processing frame {count} of {file}")
             fgMask = subtractor.apply(frame)
             masked = cv2.bitwise_and(frame, frame, mask=fgMask)
@@ -50,8 +50,6 @@ def convert_video(subtract_type, file, old_video_repository):
 
 if __name__ == "__main__":
     freeze_support()
-
-    format = "%(asctime)s: %(message)s"
     logging.basicConfig(
         format="%(asctime)s: %(message)s",
         level=logging.INFO,
