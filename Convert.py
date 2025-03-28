@@ -1,4 +1,48 @@
+"""
+Module for Background Subtraction Video Conversion
+
+This module processes video files by applying a background subtraction
+technique (MOG2 or KNN) to each frame, effectively highlighting moving objects
+while suppressing static background elements. The videos are first relocated to a
+destination directory before processing, and then each video is transformed into
+a new version with the background subtraction applied.
+
+The module leverages OpenCV for video manipulation, argparse for command-line
+argument parsing, and concurrent.futures for multiprocessing. It also employs
+the subprocess module to manage file movements and Python's built-in logging
+to track operation status and errors.
+
+Usage:
+    python Convert.py --path /path/to/videos --dest-dir unsubtracted_videos --subtractor MOG2
+
+Note:
+    - The operator freeze_support() is used for compatibility with Windows-based multiprocessing.
+    - ProcessPoolExecutor is utilized to handle video conversion in parallel.
+    - The converted video is saved with the original filename, replacing any previous file.
+
+Convert a video by applying a background subtraction algorithm to each frame.
+
+This function opens the specified video file from the old video repository,
+applies the selected background subtraction method (MOG2 or KNN) on a per-frame basis,
+and writes the processed frames into a new video file with the same filename.
+It also logs the progress and any encountered errors during the conversion.
+
+    Parameters:
+        subtract_type (str): The background subtractor to use. Accepts "MOG2" or "KNN".
+        file (str): The filename of the video to process.
+        old_video_repository (str): Path to the directory containing original videos.
+
+    Returns:
+        None
+
+    Side Effects:
+        - Reads the input video file and creates an output video file.
+        - Logs information about the processing progress and any errors.
+        - Releases video capture and writer resources after processing.
+"""
+
 import cv2
+
 import argparse
 from multiprocessing import freeze_support
 import os
@@ -31,6 +75,7 @@ def convert_video(subtract_type, file, old_video_repository):
 
         count = 0
         while True:
+            # masking done on a frame by frame basis
             ret, frame = cap.read()
             if not ret:
                 break
