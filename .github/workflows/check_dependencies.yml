@@ -1,7 +1,7 @@
 name: Install Python Dependencies and Check for Conflicts
 
 on:
-  push:
+  push: 
     branches:
       - main
     paths:

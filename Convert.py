@@ -92,7 +92,7 @@ def convert_video(subtract_type, file, old_video_repository):
         writer.release()
         logging.info(f"Reseased captures for video {file}")
 
-
+ 
 if __name__ == "__main__":
     freeze_support()
     logging.basicConfig(
