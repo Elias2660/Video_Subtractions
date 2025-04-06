@@ -5,7 +5,7 @@ This project provides a script to perform background subtraction on videos using
 This project is most used with the [Unified-bee-Runner](https://github.com/Elias2660/Unified-bee-Runner).
 
 ## Requirements
-
+ 
 - Python 3.12
 - OpenCV
 - NumPy
