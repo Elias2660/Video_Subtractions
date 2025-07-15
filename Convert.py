@@ -102,7 +102,7 @@ if __name__ == "__main__":
     )
     parser = argparse.ArgumentParser(description="Add background subtraction to videos")
     parser.add_argument(
-        "--path", help="the path to the video", required=False, type=str, default="."
+        "--path", help="the path to the video files", required=False, type=str, default="."
     )
     parser.add_argument(
         "--dest-dir",
