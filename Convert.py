@@ -1,44 +1,46 @@
 """
-Module for Background Subtraction Video Conversion
+Module Name: Convert.py
 
-This module processes video files by applying a background subtraction
-technique (MOG2 or KNN) to each frame, effectively highlighting moving objects
-while suppressing static background elements. The videos are first relocated to a
-destination directory before processing, and then each video is transformed into
-a new version with the background subtraction applied.
-
-The module leverages OpenCV for video manipulation, argparse for command-line
-argument parsing, and concurrent.futures for multiprocessing. It also employs
-the subprocess module to manage file movements and Python's built-in logging
-to track operation status and errors.
+Description:
+    Applies background subtraction to a batch of video files in parallel, using either MOG2 or KNN.
+    Original videos are first moved into a backup directory, then each is processed frame‑by‑frame
+    to highlight moving objects and suppress static backgrounds. Processed videos overwrite their
+    originals in the working directory.
 
 Usage:
-    python Convert.py --path /path/to/videos --dest-dir unsubtracted_videos --subtractor MOG2
+    python Convert.py \
+        --path <video_directory> \
+        --dest-dir <backup_directory> \
+        [--max-workers <num_processes>] \
+        [--subtractor <MOG2|KNN>]
 
-Note:
-    - The operator freeze_support() is used for compatibility with Windows-based multiprocessing.
-    - ProcessPoolExecutor is utilized to handle video conversion in parallel.
-    - The converted video is saved with the original filename, replacing any previous file.
+Arguments:
+    --path
+        Directory containing the original .mp4 videos. (default: ".")
+    --dest-dir
+        Directory name to which originals will be moved before processing. If it already exists,
+        it will be renamed with an "_old" suffix. (default: "unsubtracted_videos")
+    --max-workers
+        Number of parallel processes to use when converting videos. (default: 10)
+    --subtractor
+        Background subtraction algorithm: "MOG2" or "KNN". (default: "MOG2")
 
-Convert a video by applying a background subtraction algorithm to each frame.
+Workflow:
+    1. Configure multiprocessing support and logging.
+    2. Change working directory to `--path`.
+    3. Rename existing `--dest-dir` to `<dest-dir>_old` if present, then create a fresh `--dest-dir`.
+    4. Move all `.mp4` files into `--dest-dir`.
+    5. Use a ProcessPoolExecutor with `--max-workers` to run `convert_video` on each file:
+         - Open video with OpenCV.
+         - Instantiate the selected subtractor.
+         - Read frames, apply subtraction mask, and write masked frames to a new .mp4 in the working dir.
+         - Log progress every 10,000 frames.
+    6. Release resources and log completion.
 
-This function opens the specified video file from the old video repository,
-applies the selected background subtraction method (MOG2 or KNN) on a per-frame basis,
-and writes the processed frames into a new video file with the same filename.
-It also logs the progress and any encountered errors during the conversion.
-
-    Parameters:
-        subtract_type (str): The background subtractor to use. Accepts "MOG2" or "KNN".
-        file (str): The filename of the video to process.
-        old_video_repository (str): Path to the directory containing original videos.
-
-    Returns:
-        None
-
-    Side Effects:
-        - Reads the input video file and creates an output video file.
-        - Logs information about the processing progress and any errors.
-        - Releases video capture and writer resources after processing.
+Dependencies:
+    - OpenCV (cv2): video I/O and background subtraction.
+    - argparse, logging, os, subprocess, re: CLI, filesystem, and logging.
+    - concurrent.futures, multiprocessing.freeze_support: parallel processing.
 """
 
 import cv2

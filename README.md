@@ -1,64 +1,84 @@
 # Video Background Subtraction
 
-This project provides a script to perform background subtraction on videos using OpenCV. The script processes videos in a specified directory and saves the processed videos with the background subtracted.
+A command‑line tool for applying background subtraction (MOG2 or KNN) to batches of `.mp4` videos in parallel.  
+Original videos are moved to a backup directory before processing, then each video is processed frame‑by‑frame to highlight moving objects and suppress the static background.
 
-This project is most used with the [Unified-bee-Runner](https://github.com/Elias2660/Unified-bee-Runner).
+This project is most used with the [Unified‑bee‑Runner](https://github.com/Elias2660/Unified-bee-Runner).
+
+---
 
 ## Requirements
- 
+
 - Python 3.12
-- OpenCV
+- OpenCV (`cv2`)
 - NumPy
+
+---
 
 ## Installation
 
-1. Clone the repository:
+1. **Clone the repository**
 
-   ```sh
+   ```bash
    git clone <repository-url>
    cd <repository-directory>
    ```
 
-2. Create and activate a virtual environment:
+2. Create and activate a virtual environment
 
-   ```sh
+   ```
    python3 -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   source venv/bin/activate    # On Windows: `venv\Scripts\activate`
    ```
 
-3. Install the required packages:
-   ```sh
+3. Install dependencies
+
+   ```bash
    pip install -r requirements.txt
    ```
 
 ## Usage
 
-Run the script with the following command:
-
-```sh
-python Convert.py --path <path-to-videos> --dest-dir <destination-directory> --max-workers <number-of-workers> --subtractor <subtractor-type>
+```bash
+python Convert.py \
+  --path <video_directory> \
+  --dest-dir <backup_directory> \
+  [--max-workers <num_processes>] \
+  [--subtractor <MOG2|KNN>]
 ```
 
-## Arguments
+- `--path` (default: `.`) \
+  Directory containing the original .mp4 videos.
 
-`--path`: The path to the directory containing the videos. Default is the current directory. 
+- `--dest-dir` (default: `unsubtracted_videos`) \
+  Directory to which originals are moved. If it already exists, it will be renamed to `<dest-dir>_old`.
 
-`--dest-dir`: The directory to move the old videos to. Default is unsubtracted_videos. 
+- `--max-workers` (default: `10`) \
+  Number of parallel processes to use for conversion.
 
-`--max-workers`: The number of workers to use for processing the videos. Default is 10. 
-
-`--subtractor`: The background subtractor to use. Choices are MOG2 and KNN. Default is MOG2.
+- `--subtractor` (default: `MOG2`) \
+  Background subtraction algorithm: `MOG2` or `KNN`.
 
 ## Example
 
-```sh
-python Convert.py --path ./videos --dest-dir ./processed_videos --max-workers 5 --subtractor KNN
+```bash
+python Convert.py \
+  --path ./videos \
+  --dest-dir ./processed_backup \
+  --max-workers 5 \
+  --subtractor KNN
 ```
 
 ## Logging
 
-The script logs its progress and any errors encountered during processing. Logs are printed to the console with timestamps.
+Logs are printed to the console at INFO level with timestamps. They include:
+
+- Start and finish of each video conversion
+
+- Progress updates every 10,000 frames
+
+- Any errors or exceptions encountered
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the (MIT License)[LICENSE].
