@@ -2,10 +2,10 @@
 Module Name: Convert.py
 
 Description:
-    Applies background subtraction to a batch of video files in parallel, using either MOG2 or KNN.
+    Applies background subtraction to a batch of .mp4 videos in parallel, using either MOG2 or KNN.
     Original videos are first moved into a backup directory, then each is processed frame‑by‑frame
-    to highlight moving objects and suppress static backgrounds. Processed videos overwrite their
-    originals in the working directory.
+    to highlight moving objects and suppress static backgrounds. The processed videos overwrite
+    the originals in the working directory.
 
 Usage:
     python Convert.py \
@@ -18,30 +18,30 @@ Arguments:
     --path
         Directory containing the original .mp4 videos. (default: ".")
     --dest-dir
-        Directory name to which originals will be moved before processing. If it already exists,
-        it will be renamed with an "_old" suffix. (default: "unsubtracted_videos")
+        Directory to move originals before processing; renamed with “_old” suffix if it exists, then recreated. (default: "unsubtracted_videos")
     --max-workers
-        Number of parallel processes to use when converting videos. (default: 10)
+        Number of parallel processes for conversion. (default: 10)
     --subtractor
         Background subtraction algorithm: "MOG2" or "KNN". (default: "MOG2")
 
 Workflow:
-    1. Configure multiprocessing support and logging.
+    1. Enable multiprocessing support and configure logging.
     2. Change working directory to `--path`.
     3. Rename existing `--dest-dir` to `<dest-dir>_old` if present, then create a fresh `--dest-dir`.
     4. Move all `.mp4` files into `--dest-dir`.
     5. Use a ProcessPoolExecutor with `--max-workers` to run `convert_video` on each file:
          - Open video with OpenCV.
-         - Instantiate the selected subtractor.
-         - Read frames, apply subtraction mask, and write masked frames to a new .mp4 in the working dir.
+         - Instantiate the chosen subtractor.
+         - For each frame: apply subtraction mask, write masked frame to a new .mp4 in the working dir.
          - Log progress every 10,000 frames.
-    6. Release resources and log completion.
+    6. Release all resources and log completion.
 
 Dependencies:
-    - OpenCV (cv2): video I/O and background subtraction.
-    - argparse, logging, os, subprocess, re: CLI, filesystem, and logging.
-    - concurrent.futures, multiprocessing.freeze_support: parallel processing.
+    - OpenCV (`cv2`) for video I/O and background subtraction.
+    - `argparse`, `logging`, `os`, `subprocess`, `re` for CLI, filesystem, and logging.
+    - `concurrent.futures`, `multiprocessing.freeze_support` for parallel processing.
 """
+
 
 import cv2
 
