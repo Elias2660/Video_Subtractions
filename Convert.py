@@ -140,6 +140,11 @@ if __name__ == "__main__":
     command = f"mv *.mp4 {args.dest_dir}"
     subprocess.run(command, shell=True)
     old_dir_list = os.listdir(args.dest_dir)
+    
+    if len(old_dir_list) == 0:
+        raise Exception(f"There are no files in the path specified by args.dest_dir, which is {args.dest_dir}. "
+                        "That means that either there are no video files, or there is a problem with the path that was created.")
+    
     file_list = list(set([file for file in file_list if re.search(r".mp4$", file)]))
 
     logging.info(
