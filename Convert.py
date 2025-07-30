@@ -52,6 +52,11 @@ import subprocess
 import concurrent.futures
 import re
 import logging
+logging.basicConfig(
+    format="%(asctime)s: (background subtractions) %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 
 def convert_video(subtract_type, file, old_video_repository):
@@ -92,16 +97,11 @@ def convert_video(subtract_type, file, old_video_repository):
     finally:
         cap.release()
         writer.release()
-        logging.info(f"Reseased captures for video {file}")
+        logging.debug(f"Reseased captures for video {file}")
 
  
 if __name__ == "__main__":
     freeze_support()
-    logging.basicConfig(
-        format="%(asctime)s: %(message)s",
-        level=logging.INFO,
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
     parser = argparse.ArgumentParser(description="Add background subtraction to videos")
     parser.add_argument(
         "--path", help="the path to the video files", required=False, type=str, default="."
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     file_list = list(set([file for file in file_list if re.search(r".mp4$", file)]))
 
     logging.info(
-        f"Finished the moving of old videos to the destination directory, creating subtractor, file list is {file_list}"
+        f"Finished the moving of old videos to the destination directory, creating subtractor, {len(file_list)} videos"
     )
 
     logging.info("Starting the conversion of the videos")
